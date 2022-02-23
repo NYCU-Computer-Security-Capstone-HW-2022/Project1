@@ -10,5 +10,5 @@ all: ${FILE_NAME}
 		echo "There is no dns_attack.cpp file in the src/ folder.";\
     fi
 
-clean:
-	rm hw3
+clean: ${OUT}
+	@rm -f ${OUT}
