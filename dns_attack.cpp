@@ -5,6 +5,7 @@
 #include <iostream>
 
 int main(int argc, char* argv[]) {
+	std::cout << "[Notice] If the operation is not permitted. Please use sudo to run it again." << std::endl;
 	if (argc != 4) {
 		std::cout << "Usage: " << argv[0]
 		<< " <Victim IP> <UDP Source Port> <DNS Server IP>" << std::endl;
@@ -16,7 +17,7 @@ int main(int argc, char* argv[]) {
 
 	for (int i = 0; i < strlen(argv[1]); ++i)
 		Victim_IP.push_back(argv[1][i]);
-	for (int i = 0; i < strlen(argv[3]); ++i) 
+	for (int i = 0; i < strlen(argv[3]); ++i)
 		Server_IP.push_back(argv[3][i]);
 
 	dns_attack attack(Victim_IP, Source_Port, Server_IP);
