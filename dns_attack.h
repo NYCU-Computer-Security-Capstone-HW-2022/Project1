@@ -29,8 +29,10 @@ dns_attack::dns_attack() {
 void dns_attack::attack() {
 	int sockfd = Socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
 	{
+		std::cout << "Set up socket option........." << std::endl;
 		int one = 1;
-		Setsockopt(sockfd, IPPROTO_UDP, IP_HDRINCL, &one, sizeof(int));
+		Setsockopt(sockfd, IPPROTO_IP, IP_HDRINCL, &one, sizeof(int));
+		std::cout << "Success!" << std::endl;
 	}
 
 	struct ipheader {
