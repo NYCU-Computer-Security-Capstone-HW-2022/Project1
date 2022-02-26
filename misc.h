@@ -17,6 +17,11 @@ int Socket(int domain, int type, int protocol) {
     return sockfd;
 }
 
+void Close(int connfd) {
+    int status;
+    if ((status = close(connfd)) == -1) err_sys("Close Error: ");
+}
+
 void Setsockopt(int socket, int level, int option_name, const void *option_value, socklen_t option_len) {
     int status = setsockopt(socket, level, option_name, option_value, option_len);
     if (status < 0) err_sys("Set socket option error: ");
