@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <cstdio>
 #include <cstdlib>
+#include <unistd.h>
 
 void err_sys(const char* s) {
     perror(s);
