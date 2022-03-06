@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
 	int Source_Port = atoi(argv[2]);
 
 	dns_attack attack(Victim_IP, Source_Port, Server_IP);
-	attack.attack();
+	for(int i = 0; i < 3; ++i) attack.attack();
 
 	return 0;
 }

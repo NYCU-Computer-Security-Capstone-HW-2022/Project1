@@ -151,8 +151,9 @@ void dns_attack::attack() {
 	udp->len = htons(sizeof(struct udphdr) + packetlen);
 	
 	/* Calculate Checksum */
-	ip->check = getCheckSum((unsigned short *)buffer, sizeof(struct iphdr) + sizeof(struct udphdr) + packetlen);
-	udp->check = getCheckSum((unsigned short *)buffer + sizeof(struct iphdr), sizeof(struct udphdr) + packetlen);
+	ip->check = getCheckSum((unsigned short *)buffer, (sizeof(struct iphdr)) / 2);
+	// udp->check = getCheckSum((unsigned short *)buffer + sizeof(struct iphdr), (sizeof(struct udphdr) + packetlen) / 2);
+	udp->check = 0;
 
 	struct sockaddr_in sin;
 	sin.sin_family = AF_INET;
