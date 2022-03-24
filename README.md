@@ -1,8 +1,10 @@
 # Project1
-Project 1 in the course
+Project 1 in the course.
 
-## To Do
+In this project, we implement the dns amplification attack. 
+Also, we use the EDNS mechanism to enlarge our ratio of dns response packet size divided dns request packet size.
 
-- Learn how to write raw socket in C/C++
-- Yojahuang: please explain how you amplify the DNS response
-- Jun-Hong: please propose a solution that can defend against the DoS attack based on the DNS reflection
+## How to set up the project
+
+1. Run our makefile
+2. ./a.out <Victim IP> <UDP Source Port> <DNS Server IP> (Remember to use the root privilege to execute program.)
